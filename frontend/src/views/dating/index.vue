@@ -82,9 +82,9 @@ import {
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('dating')
-const columns = ["送检编号", "样品类型", "采样单位", "采样层位", "送检方法", "送检日期", "预计返回", "送检状态"]
+const columns = ["送检编号", "样品类型", "采样单位", "采样层位", "送检方法", "送检日期", "预计返回", "送检状态", "关联样本编号"]
 const actions = ["送出检测", "登记结果", "归档报告"]
-const statuses = ["待送检", "已送检", "检测中", "已出结果", "已归档"]
+const statuses = ["待补样", "待送检", "已送检", "检测中", "已出结果", "已归档"]
 const stats = [{"label": "送检总数", "value": 0}, {"label": "检测中数", "value": 0}, {"label": "已出结果数", "value": 0}]
 
 const rows = ref<EntryRow[]>([])
@@ -109,7 +109,7 @@ function exportRows() {
 }
 
 function openCreate() {
-  errorMessage.value = '测年送检单登记入口尚未接入审批流'
+  errorMessage.value = '测年送检单由浮选样本「执行浮选」后自动生成待补样记录，手工登记入口尚未接入审批流'
 }
 
 function runAction(action: string, row: EntryRow) {

@@ -20,11 +20,25 @@ function readStorage(): Record<string, EntryRow[]> {
   }
   try {
     const parsed = JSON.parse(raw) as Record<string, EntryRow[]>
-    return { ...fallback, ...parsed }
+    return normalize({ ...fallback, ...parsed })
   } catch {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(fallback))
     return fallback
   }
+}
+
+// 历史数据归一化：职责边界上线前就在库里的记录，补齐新字段但不改原归属。
+function normalize(rows: Record<string, EntryRow[]>): Record<string, EntryRow[]> {
+  for (const row of rows['flotation'] ?? []) {
+    // 历史浮选样本仍按原单位归属：样本由现场人员提交，归属现场组。
+    row['归属单位'] = row['归属单位'] ?? '现场组'
+    row['现场复核日期'] = row['现场复核日期'] ?? ''
+    row['操作记录'] = row['操作记录'] ?? ''
+  }
+  for (const row of rows['dating'] ?? []) {
+    row['关联样本编号'] = row['关联样本编号'] ?? ''
+  }
+  return rows
 }
 
 let cache: Record<string, EntryRow[]> | null = null
